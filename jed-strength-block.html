@@ -1,0 +1,681 @@
+<title>JED Strength Block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --paper:#F5F4EF;
+  --surface:#FFFFFF;
+  --surface-2:#EDECE4;
+  --ink:#171E1A;
+  --muted:#5D6862;
+  --rule:#DBDAD0;
+  --rule-soft:#E7E6DD;
+  --train:#9A6210;
+  --train-bg:#F1E7D5;
+  --eat:#2B6851;
+  --eat-bg:#DEEAE3;
+  --alert:#8F3324;
+  --alert-bg:#F3E1DD;
+  --shadow:0 1px 2px rgba(23,30,26,.05), 0 10px 28px rgba(23,30,26,.05);
+  --display:'Archivo',ui-sans-serif,system-ui,sans-serif;
+  --body:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#11150F;
+    --surface:#191E17;
+    --surface-2:#222820;
+    --ink:#E9EAE1;
+    --muted:#98A294;
+    --rule:#2F362C;
+    --rule-soft:#242A22;
+    --train:#D9A24C;
+    --train-bg:#2C2517;
+    --eat:#74BE9B;
+    --eat-bg:#17281F;
+    --alert:#DE8878;
+    --alert-bg:#2C1B17;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11150F;
+  --surface:#191E17;
+  --surface-2:#222820;
+  --ink:#E9EAE1;
+  --muted:#98A294;
+  --rule:#2F362C;
+  --rule-soft:#242A22;
+  --train:#D9A24C;
+  --train-bg:#2C2517;
+  --eat:#74BE9B;
+  --eat-bg:#17281F;
+  --alert:#DE8878;
+  --alert-bg:#2C1B17;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.62;
+  margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px 96px}
+.prose{max-width:66ch}
+
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;line-height:1.12;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.5rem,3.4vw,2.05rem);letter-spacing:-.015em}
+h3{font-size:1.15rem;letter-spacing:-.005em}
+h4{font-size:.95rem;letter-spacing:-.003em}
+p{margin:0}
+
+.eyebrow{
+  font-family:var(--display);font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+header.mast{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+}
+.mast-inner{
+  max-width:1060px;margin:0 auto;padding:52px 24px 40px;
+  display:flex;flex-direction:column;gap:18px;
+}
+.mast h1{font-size:clamp(2.3rem,6.4vw,3.9rem);letter-spacing:-.032em}
+.mast h1 em{font-style:normal;color:var(--train)}
+.mast .sub{max-width:56ch;color:var(--muted);font-size:1.05rem}
+.stamp{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted);
+}
+.stamp span{display:inline-flex;align-items:center;gap:8px}
+.stamp span::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--rule)}
+.stamp span:last-child::after{display:none}
+
+/* ---------- sticky nav ---------- */
+nav.jump{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter:saturate(1.4) blur(8px);
+  border-bottom:1px solid var(--rule);
+}
+.jump-inner{
+  max-width:1060px;margin:0 auto;padding:0 24px;
+  display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;
+}
+.jump a{
+  font-family:var(--display);font-size:.78rem;font-weight:600;
+  letter-spacing:.02em;color:var(--muted);text-decoration:none;
+  padding:13px 12px;white-space:nowrap;border-bottom:2px solid transparent;
+}
+.jump a:hover,.jump a:focus-visible{color:var(--ink);border-bottom-color:var(--rule)}
+
+/* ---------- numbers strip ---------- */
+.numbers{
+  display:grid;gap:1px;background:var(--rule-soft);
+  grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
+  border:1px solid var(--rule-soft);border-radius:3px;overflow:hidden;
+  margin:36px 0 0;
+}
+.numbers div{background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:3px}
+.numbers dt{font-family:var(--display);font-size:.66rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.numbers dd{margin:0;font-family:var(--mono);font-size:1.3rem;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.numbers dd small{font-size:.72rem;color:var(--muted);font-weight:400;letter-spacing:0}
+
+/* ---------- sections ---------- */
+section{padding-top:64px}
+.sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.sec-head .rule{height:3px;width:52px;border-radius:2px;background:var(--ink)}
+section.train .sec-head .rule{background:var(--train)}
+section.eat .sec-head .rule{background:var(--eat)}
+
+/* ---------- cards & tables ---------- */
+.card{
+  background:var(--surface);border:1px solid var(--rule-soft);
+  border-radius:4px;box-shadow:var(--shadow);overflow:hidden;
+}
+.card-head{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px;
+  padding:16px 20px;border-bottom:1px solid var(--rule-soft);
+  background:var(--surface-2);
+}
+.card-head .tag{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;
+}
+.tag.t-train{background:var(--train-bg);color:var(--train)}
+.tag.t-eat{background:var(--eat-bg);color:var(--eat)}
+.card-head .note{margin-left:auto;font-size:.85rem;color:var(--muted)}
+
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{text-align:left;padding:10px 20px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+th{
+  font-family:var(--display);font-size:.68rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--rule);white-space:nowrap;
+}
+td.num,th.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.lift{font-weight:600;font-family:var(--body)}
+td .why{display:block;font-size:.82rem;color:var(--muted);margin-top:2px}
+
+.grid2{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.stack{display:flex;flex-direction:column;gap:20px}
+.stack-sm{display:flex;flex-direction:column;gap:12px}
+
+/* ---------- meals ---------- */
+.meal{display:grid;grid-template-columns:112px 1fr;gap:0}
+.meal + .meal{border-top:1px solid var(--rule-soft)}
+.meal .when{
+  padding:14px 0 14px 20px;
+  font-family:var(--display);font-size:.7rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+}
+.meal .what{padding:14px 20px 14px 4px}
+.meal .what .items{font-size:.95rem}
+.meal .what .macro{
+  font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  margin-top:4px;letter-spacing:.02em;font-variant-numeric:tabular-nums;
+}
+.total-row{
+  display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;
+  padding:14px 20px;background:var(--eat-bg);border-top:1px solid var(--rule-soft);
+  font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums;color:var(--eat);
+}
+.total-row strong{font-weight:600}
+
+/* ---------- callouts ---------- */
+.call{
+  border-left:3px solid var(--alert);background:var(--alert-bg);
+  padding:16px 20px;border-radius:0 4px 4px 0;
+}
+.call h4{color:var(--alert);margin-bottom:6px}
+.call p,.call li{font-size:.94rem}
+.call ul{margin:6px 0 0;padding-left:20px}
+.call li+li{margin-top:4px}
+
+.plain{
+  border-left:3px solid var(--rule);padding:14px 20px;
+  background:var(--surface);border-radius:0 4px 4px 0;font-size:.94rem;
+}
+
+ul.tight{margin:0;padding-left:20px}
+ul.tight li+li{margin-top:6px}
+ol.tight{margin:0;padding-left:22px}
+ol.tight li+li{margin-top:8px}
+
+.shop{columns:2;column-gap:32px;font-size:.94rem}
+.shop ul{margin:0;padding:0;list-style:none}
+.shop li{
+  break-inside:avoid;display:flex;justify-content:space-between;gap:12px;
+  padding:7px 0;border-bottom:1px solid var(--rule-soft);
+}
+.shop li span:last-child{font-family:var(--mono);font-size:.85rem;color:var(--muted);white-space:nowrap}
+@media (max-width:620px){.shop{columns:1}}
+
+footer{
+  margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);
+  font-size:.85rem;color:var(--muted);max-width:70ch;
+}
+@media (max-width:560px){
+  .meal{grid-template-columns:1fr}
+  .meal .when{padding:14px 20px 0}
+  .meal .what{padding:6px 20px 14px}
+  th,td{padding:10px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="mast">
+  <div class="mast-inner">
+    <div class="stamp">
+      <span>12-week block</span><span>4 gym days</span><span>5 kg / month floor</span><span>Rev. 24 Aug 2026</span>
+    </div>
+    <h1>Five kilos a month,<br><em>and keep the strength.</em></h1>
+    <p class="sub">You are 195.6&nbsp;cm and 136.7&nbsp;kg, and you want at least 5&nbsp;kg off every month. That is roughly 0.85&nbsp;% of your bodyweight a week &mdash; aggressive, but defensible at your size if the protein stays high and you keep lifting heavy. This is the plan that gets there: what to lift, what to eat, and the exact rules for adjusting when the scale disagrees.</p>
+  </div>
+</header>
+
+<nav class="jump" aria-label="Sections">
+  <div class="jump-inner">
+    <a href="#numbers">The numbers</a>
+    <a href="#tradeoff">The trade-off</a>
+    <a href="#week">The week</a>
+    <a href="#training">Training</a>
+    <a href="#cardio">Cardio &amp; steps</a>
+    <a href="#diet">Eating</a>
+    <a href="#shopping">Shopping</a>
+    <a href="#progress">Progress</a>
+    <a href="#watch">Watch for</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<section id="numbers" style="padding-top:0">
+  <dl class="numbers">
+    <div><dt>Start weight</dt><dd>136.7 <small>kg</small></dd></div>
+    <div><dt>Active maintenance</dt><dd>~3,600 <small>kcal</small></dd></div>
+    <div><dt>Daily intake</dt><dd>2,350 <small>kcal</small></dd></div>
+    <div><dt>Protein floor</dt><dd>210 <small>g/day</small></dd></div>
+    <div><dt>Target rate</dt><dd>1.2 <small>kg/week</small></dd></div>
+    <div><dt>Week 12 weight</dt><dd>~121 <small>kg</small></dd></div>
+  </dl>
+  <div class="plain prose" style="margin-top:20px">
+    <p>Your resting burn is about 2,464&nbsp;kcal (Mifflin&ndash;St&nbsp;Jeor). With four lifting sessions, three cardio sessions and 12,000 steps a day, maintenance lands near <strong>3,600&nbsp;kcal</strong>. Eating 2,350 leaves a deficit of roughly 1,250 a day &mdash; about 1.15&nbsp;kg of fat a week, or <strong>5&nbsp;kg a month</strong>. Every figure on that list is an estimate with about 10&nbsp;% of slack in it. The seven-day weight average is the real instrument, and <a href="#progress">Progress</a> tells you exactly what to move when it disagrees.</p>
+  </div>
+</section>
+
+<section id="tradeoff">
+  <div class="sec-head">
+    <span class="eyebrow">Straight talk</span>
+    <h2>What 5 kg a month costs you</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="grid2">
+    <div class="plain">
+      <h4 style="margin-bottom:6px">Why it's achievable</h4>
+      <p>At 136.7&nbsp;kg you have a large fat store to draw energy from, which is exactly the condition under which a big deficit spares muscle rather than eating it. High protein and heavy lifting are the other two conditions, and both are built into this plan. Around 1&nbsp;% of bodyweight per week is the usual upper bound for someone at your size; 1.15&nbsp;kg is 0.85&nbsp;%, so you are inside it, not past it.</p>
+    </div>
+    <div class="plain">
+      <h4 style="margin-bottom:6px">What it costs</h4>
+      <p>Muscle gain gets slower. In a deficit this size you should expect <strong>strength to climb steadily</strong> &mdash; more weight on the bar most weeks &mdash; while visible new muscle stays modest. That is a fair trade: you will finish twelve weeks meaningfully stronger and about 15&nbsp;kg lighter, with the muscle you already carry intact and far more visible. The serious size-building phase works much better once you are leaner, and this is how you get there fastest.</p>
+    </div>
+  </div>
+  <div class="call" style="margin-top:20px">
+    <h4>The floor that isn't negotiable</h4>
+    <p>Do not chase the number below <strong>2,100&nbsp;kcal</strong> or under <strong>210&nbsp;g of protein</strong>. Past that point you stop buying fat loss and start buying muscle loss, hunger you can't manage, and sessions where the weights go backwards. If a month comes up short, buy the difference with <em>steps</em>, not with less food.</p>
+  </div>
+</section>
+
+<section id="week">
+  <div class="sec-head">
+    <span class="eyebrow">Structure</span>
+    <h2>The week</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="prose" style="margin-bottom:20px">
+    <p>Four lifting days on an upper/lower split, three cardio days, no fully idle day &mdash; Sunday is a walk and a cook-up. Lower and upper alternate so nothing gets trained two days running. If life moves a day, keep the order; never do two lower days back to back.</p>
+  </div>
+  <div class="card scroll">
+    <table>
+      <thead><tr><th>Day</th><th>Session</th><th>Focus</th><th class="num">Time</th></tr></thead>
+      <tbody>
+        <tr><td class="num">Mon</td><td class="lift">Lower A</td><td>Squat pattern, quads, calves<span class="why">Heaviest day of the week &mdash; go in fresh.</span></td><td class="num">60&ndash;70 min</td></tr>
+        <tr><td class="num">Tue</td><td class="lift">Upper A</td><td>Press focus &mdash; chest, shoulders, triceps</td><td class="num">55&ndash;65 min</td></tr>
+        <tr><td class="num">Wed</td><td class="lift">Cardio</td><td>40 min easy zone-2, plus the step target</td><td class="num">40 min</td></tr>
+        <tr><td class="num">Thu</td><td class="lift">Lower B</td><td>Hinge pattern, hamstrings, glutes</td><td class="num">55&ndash;65 min</td></tr>
+        <tr><td class="num">Fri</td><td class="lift">Upper B</td><td>Pull focus &mdash; back, rear delts, biceps</td><td class="num">55&ndash;65 min</td></tr>
+        <tr><td class="num">Sat</td><td class="lift">Cardio</td><td>40 min easy zone-2, plus the step target</td><td class="num">40 min</td></tr>
+        <tr><td class="num">Sun</td><td class="lift">Long walk + cook</td><td>45&ndash;60 min easy walk. Cook the week's protein and starch.</td><td class="num">45&ndash;60 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="training" class="train">
+  <div class="sec-head">
+    <span class="eyebrow">Sessions</span>
+    <h2>The four sessions</h2>
+    <div class="rule"></div>
+  </div>
+
+  <div class="prose stack-sm" style="margin-bottom:24px">
+    <p>Barbells and machines throughout. <strong>Every session opens the same way:</strong> 5 minutes on a bike or a brisk incline walk, then 10 slow reps each of bodyweight hip hinges, arm circles and ankle rocks, then two light ramp-up sets of the first exercise before your working sets.</p>
+    <p>The first exercise of each day is the one that matters &mdash; go in fresh, rest properly, and add weight there before anywhere else. Everything after it is supporting volume.</p>
+  </div>
+
+  <div class="stack">
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag t-train">Day 1</span>
+        <h3>Lower A &mdash; squat</h3>
+        <span class="note">Rest 3 min on the squat, 2 min next two, 90 s after</span>
+      </div>
+      <div class="scroll"><table>
+        <thead><tr><th>Exercise</th><th class="num">Sets &times; reps</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="lift">Barbell back squat</td><td class="num">4 &times; 6&ndash;8</td><td>Heaviest lift of your week. High bar, heels flat, sit between the hips. At 195 cm your femurs are long &mdash; go to the depth where your lower back still holds position, not to someone else's idea of depth. If the rack has safety pins, set them.</td></tr>
+          <tr><td class="lift">Barbell Romanian deadlift</td><td class="num">3 &times; 8&ndash;10</td><td>Hips back, bar dragging the thighs. Stop when the hamstrings run out of stretch, not when the plates touch the floor. Straps are fine &mdash; the hamstrings should fail before the grip.</td></tr>
+          <tr><td class="lift">Leg press</td><td class="num">3 &times; 10&ndash;12</td><td>Feet high and wide on the platform so the hips do the work and the knees stay quiet. Do not let the lower back round off the pad at the bottom.</td></tr>
+          <tr><td class="lift">Leg extension</td><td class="num">2 &times; 12&ndash;15</td><td>Controlled, 1 s squeeze at the top. Quad volume that costs nothing in recovery.</td></tr>
+          <tr><td class="lift">Seated calf raise</td><td class="num">3 &times; 15</td><td>Full stretch at the bottom, pause at the top. Your calves carry 136 kg all day &mdash; they need real load to respond.</td></tr>
+          <tr><td class="lift">Cable crunch</td><td class="num">3 &times; 12</td><td>Round the spine down toward the knees. Loadable, unlike sit-ups, so it progresses like everything else.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag t-train">Day 2</span>
+        <h3>Upper A &mdash; press</h3>
+        <span class="note">Rest 2&ndash;3 min compounds, 60&ndash;90 s isolation</span>
+      </div>
+      <div class="scroll"><table>
+        <thead><tr><th>Exercise</th><th class="num">Sets &times; reps</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="lift">Barbell bench press</td><td class="num">4 &times; 6&ndash;8</td><td>Long arms mean a long stroke and a hard lockout &mdash; expect the numbers to feel modest relative to your size, and don't let that push you into bouncing the bar. Shoulder blades pulled back and down, feet planted. Use a spotter or the pins.</td></tr>
+          <tr><td class="lift">Seated machine shoulder press</td><td class="num">3 &times; 8&ndash;10</td><td>Machine over free weights here so the lower back stays out of it entirely. Set the seat so the handles sit at mid-chest.</td></tr>
+          <tr><td class="lift">Chest-supported row</td><td class="num">4 &times; 8&ndash;10</td><td>Pad takes the spine out of the equation. Pull to the lower ribs, pause a beat, control the way back. This balances all the pressing.</td></tr>
+          <tr><td class="lift">Lat pulldown, neutral grip</td><td class="num">3 &times; 10&ndash;12</td><td>Chest up, drive the elbows down and back. Don't lean past about 20&deg;.</td></tr>
+          <tr><td class="lift">Cable lateral raise</td><td class="num">3 &times; 12&ndash;15</td><td>Cables beat dumbbells here &mdash; tension at the bottom, where the side delt actually works. Light, elbows leading, stop at shoulder height.</td></tr>
+          <tr><td class="lift">Cable triceps pushdown</td><td class="num">3 &times; 12</td><td>Elbows pinned to the ribs. Last set, drop the weight and squeeze out another 10.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag t-train">Day 3</span>
+        <h3>Lower B &mdash; hinge</h3>
+        <span class="note">Rest 3 min on the deadlift, 2 min next two, 90 s after</span>
+      </div>
+      <div class="scroll"><table>
+        <thead><tr><th>Exercise</th><th class="num">Sets &times; reps</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="lift">Trap-bar deadlift</td><td class="num">4 &times; 5&ndash;6</td><td>Trap bar over the straight bar for you &mdash; the load sits in line with your hips instead of in front of them, which is a much shorter lever on a 195 cm spine. Use the high handles. If the gym has no trap bar, do a rack pull from just below the knee.</td></tr>
+          <tr><td class="lift">Barbell hip thrust</td><td class="num">3 &times; 8&ndash;10</td><td>Bench at shoulder-blade height, chin tucked, 2 s squeeze at the top. Pad the bar.</td></tr>
+          <tr><td class="lift">Bulgarian split squat</td><td class="num">3 &times; 8&ndash;10 / leg</td><td>Hold dumbbells &mdash; this is the one lift where your 15 kg pair is genuinely enough for a while. Start bodyweight-only if balance is shaky. If it never feels stable, swap in single-leg leg press.</td></tr>
+          <tr><td class="lift">Seated leg curl</td><td class="num">3 &times; 12</td><td>Seated beats lying &mdash; more stretch on the hamstring, more growth. Slow on the way back.</td></tr>
+          <tr><td class="lift">Standing calf raise</td><td class="num">3 &times; 12</td><td>Different knee angle to Day 1, hits the other calf head.</td></tr>
+          <tr><td class="lift">Farmer's carry</td><td class="num">3 &times; 40 m</td><td>Heaviest pair you can hold. Walk tall, don't lean. Grip, traps and the whole midsection in one exercise.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="tag t-train">Day 4</span>
+        <h3>Upper B &mdash; pull</h3>
+        <span class="note">Rest 2&ndash;3 min compounds, 60&ndash;90 s isolation</span>
+      </div>
+      <div class="scroll"><table>
+        <thead><tr><th>Exercise</th><th class="num">Sets &times; reps</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="lift">Lat pulldown, wide grip</td><td class="num">4 &times; 8&ndash;10</td><td>Or assisted pull-ups if the machine goes heavy enough. Unassisted pull-ups at 136 kg will come &mdash; around 115 kg they start to happen. Pulldowns build exactly the same thing meanwhile.</td></tr>
+          <tr><td class="lift">Seated cable row</td><td class="num">4 &times; 8&ndash;10</td><td>Chest tall, pull to the navel, let the shoulder blades travel forward at the front for the stretch.</td></tr>
+          <tr><td class="lift">Incline machine or dumbbell press</td><td class="num">3 &times; 10&ndash;12</td><td>30&ndash;45&deg;. Second, lighter dose of pressing for the week &mdash; keep it a rep or two shy of failure.</td></tr>
+          <tr><td class="lift">Cable face pull</td><td class="num">3 &times; 15</td><td>Rope to eye level, pull to the forehead, rotate the knuckles back. Posture insurance &mdash; never chase weight here.</td></tr>
+          <tr><td class="lift">Rear-delt fly machine</td><td class="num">3 &times; 15</td><td>Or reverse pec-deck. The rear delts are what make a big back look wide from the side.</td></tr>
+          <tr><td class="lift">EZ-bar or cable curl</td><td class="num">3 &times; 12</td><td>No swinging. Elbows stay where they are.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+  </div>
+
+  <div class="grid2" style="margin-top:24px">
+    <div class="plain">
+      <h4 style="margin-bottom:6px">How to add weight</h4>
+      <p>Double progression. Take every set to the top of its rep range &mdash; 4&nbsp;&times;&nbsp;8 on the squat, say &mdash; then add the smallest increment the gym has and start again at the bottom of the range. Weeks 1&ndash;2, stop each set with about 3 reps left in the tank while you learn the machines and find your loads. From week 3, 1&ndash;2 reps left. In a deficit this size, adding weight most weeks on the four opening lifts <em>is</em> the win.</p>
+    </div>
+    <div class="plain">
+      <h4 style="margin-bottom:6px">Deload weeks</h4>
+      <p>Week 6 and week 12: same exercises, same weights, half the sets, skip the carries. You come back stronger, and it keeps the knees, elbows and lower back intact across a long block. Do not skip these &mdash; on 2,350 kcal you are recovering with less than you would on maintenance.</p>
+    </div>
+  </div>
+
+  <div class="call" style="margin-top:20px">
+    <h4>About your 15 kg dumbbells</h4>
+    <p>Be honest about what they can do. At 136.7 kg, a 15 kg pair is too light to progress your legs, chest, back or shoulder press &mdash; you'd be doing 30+ rep sets on a goblet squat long before the muscle was challenged, which is a cardio session in disguise. They stay useful for exactly three things: <strong>Bulgarian split squats</strong> (where they'll be plenty for a month or two), <strong>lateral raises</strong>, and <strong>curls and rear-delt work</strong>.</p>
+    <p style="margin-top:10px">If you miss a gym day entirely, do this at home instead of nothing: 3 rounds of &mdash; 15 Bulgarian split squats per leg, 20 push-ups (feet elevated if easy), 15 dumbbell rows per side, 20 lateral raises, 45 s plank. It is a holding pattern, not a substitute. Get the four gym sessions.</p>
+  </div>
+</section>
+
+<section id="cardio" class="train">
+  <div class="sec-head">
+    <span class="eyebrow">Conditioning</span>
+    <h2>Cardio and steps</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="prose stack-sm">
+    <p>This is where the 5&nbsp;kg a month actually comes from. The food target alone gets you to roughly 3.5&nbsp;kg; the walking closes the gap. <strong>Steps are the lever you reach for first</strong> whenever the scale runs slow &mdash; they cost you almost nothing in recovery, which is not true of eating less or training more.</p>
+  </div>
+  <div class="card scroll" style="margin-top:20px">
+    <table>
+      <thead><tr><th>What</th><th class="num">How much</th><th>How hard</th></tr></thead>
+      <tbody>
+        <tr><td class="lift">Daily steps</td><td class="num">12,000</td><td>Non-negotiable, every day. Roughly 90 minutes of walking split across the day &mdash; before work, after lunch, after dinner. Worth about 500 kcal at your bodyweight.</td></tr>
+        <tr><td class="lift">Zone-2, Wed &amp; Sat</td><td class="num">40 min</td><td>Incline treadmill walk, stationary bike, elliptical or rower. Conversational pace &mdash; you should be able to talk but not sing.</td></tr>
+        <tr><td class="lift">Sunday walk</td><td class="num">45&ndash;60 min</td><td>Easy and outdoors. Counts toward the step total; doubles as the day you shop and cook.</td></tr>
+        <tr><td class="lift">If you need more</td><td class="num">+2,000 steps</td><td>The first adjustment lever. 12,000 &rarr; 14,000 before you touch the food.</td></tr>
+        <tr><td class="lift">Running</td><td class="num">Not yet</td><td>Wait until you are under roughly 115 kg &mdash; about month three. Until then the joint cost outweighs what it gives you, and incline walking buys the same calories.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="diet" class="eat">
+  <div class="sec-head">
+    <span class="eyebrow">Nutrition</span>
+    <h2>Eating</h2>
+    <div class="rule"></div>
+  </div>
+
+  <div class="prose stack-sm" style="margin-bottom:24px">
+    <p>Four day-templates. Rotate them A&nbsp;&rarr;&nbsp;B&nbsp;&rarr;&nbsp;C&nbsp;&rarr;&nbsp;D and start again; every one lands within 20&nbsp;kcal of target and clears 205&nbsp;g of protein. No ugu, no efo, no okra, no ewedu &mdash; the vegetable side is built from <strong>cucumber, lettuce, cabbage, green beans, tomato, tatashe and carrot</strong>, all raw-friendly, none of them slimy or bitter.</p>
+    <p><strong>All meat and fish weights are cooked or drained weight.</strong> Raw meat is roughly 30&nbsp;% more &mdash; 230&nbsp;g cooked chicken is about 300&nbsp;g raw. Rice and potato weights are boiled.</p>
+  </div>
+
+  <div class="card" style="margin-bottom:28px">
+    <div class="card-head"><span class="tag t-eat">Daily target</span><h3>2,350 kcal</h3><span class="note">about 1,250 below active maintenance</span></div>
+    <div class="scroll"><table>
+      <thead><tr><th>Macro</th><th class="num">Per day</th><th class="num">Calories</th><th>Why this number</th></tr></thead>
+      <tbody>
+        <tr><td class="lift">Protein</td><td class="num">205&ndash;210 g</td><td class="num">830&ndash;840</td><td>About 2.2 g per kg of your estimated lean mass. In a deficit this size it is the single thing standing between you and losing muscle. Hit it even on a day the rest falls apart.</td></tr>
+        <tr><td class="lift">Carbohydrate</td><td class="num">219&ndash;230 g</td><td class="num">880&ndash;920</td><td>Rice, potato and sweet potato, kept mostly at lunch and dinner on lifting days.</td></tr>
+        <tr><td class="lift">Fat</td><td class="num">72&ndash;77 g</td><td class="num">650&ndash;690</td><td>Eggs, sardines, mozzarella, minced beef, a little oil. Held at this level rather than lower &mdash; very low fat during fast weight loss is one of the things that provokes gallstones.</td></tr>
+        <tr><td class="lift">Vegetables</td><td class="num">880&ndash;1,050 g</td><td class="num">~230</td><td>Already counted in the totals below. Cucumber and lettuce do most of the volume work at 15 kcal per 100 g &mdash; if a meal leaves you hungry, another 200 g of either costs 30 kcal and will not move the plan.</td></tr>
+        <tr><td class="lift">Water</td><td class="num">4 L</td><td class="num">&mdash;</td><td>More on training days, more in Lagos heat, and more again because you are walking 12,000 steps.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="stack">
+
+    <div class="card">
+      <div class="card-head"><span class="tag t-eat">Day A</span><h3>Chicken, gizzard, sardines</h3><span class="note">2,367 kcal</span></div>
+      <div class="meal"><div class="when">Breakfast</div><div class="what"><div class="items">4 eggs scrambled with 100 g tomato + 100 g tatashe &middot; 1 slice white bread &middot; 1 orange</div><div class="macro">478 kcal &nbsp;&middot;&nbsp; P 31 &nbsp; F 21 &nbsp; C 42</div></div></div>
+      <div class="meal"><div class="when">Lunch</div><div class="what"><div class="items">230 g chicken breast &middot; 200 g white rice &middot; 200 g green beans &middot; 5 ml oil</div><div class="macro">790 kcal &nbsp;&middot;&nbsp; P 80 &nbsp; F 19 &nbsp; C 70</div></div></div>
+      <div class="meal"><div class="when">Snack</div><div class="what"><div class="items">1 banana &middot; 40 g mozzarella</div><div class="macro">207 kcal &nbsp;&middot;&nbsp; P 11 &nbsp; F 7 &nbsp; C 28</div></div></div>
+      <div class="meal"><div class="when">Dinner</div><div class="what"><div class="items">200 g chicken gizzard &middot; 300 g boiled Irish potato &middot; 200 g cabbage &middot; 100 g carrot &middot; 5 ml oil</div><div class="macro">748 kcal &nbsp;&middot;&nbsp; P 70 &nbsp; F 18 &nbsp; C 82</div></div></div>
+      <div class="meal"><div class="when">Evening</div><div class="what"><div class="items">60 g sardines, drained (about half a tin) &middot; 200 g cucumber, salted and peppered</div><div class="macro">144 kcal &nbsp;&middot;&nbsp; P 15 &nbsp; F 7 &nbsp; C 8</div></div></div>
+      <div class="total-row"><strong>Total 2,367 kcal</strong><span>Protein 207 g</span><span>Fat 72 g</span><span>Carbs 230 g</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="tag t-eat">Day B</span><h3>Turkey and beef</h3><span class="note">2,361 kcal</span></div>
+      <div class="meal"><div class="when">Breakfast</div><div class="what"><div class="items">3 eggs with 150 g tomato &middot; 1 slice white bread &middot; 1 orange</div><div class="macro">384 kcal &nbsp;&middot;&nbsp; P 24 &nbsp; F 16 &nbsp; C 37</div></div></div>
+      <div class="meal"><div class="when">Lunch</div><div class="what"><div class="items">250 g turkey breast &middot; 300 g boiled sweet potato &middot; 200 g green beans &middot; 100 g tomato &middot; 5 ml oil</div><div class="macro">776 kcal &nbsp;&middot;&nbsp; P 86 &nbsp; F 13 &nbsp; C 81</div></div></div>
+      <div class="meal"><div class="when">Snack</div><div class="what"><div class="items">1 banana &middot; 30 g mozzarella</div><div class="macro">181 kcal &nbsp;&middot;&nbsp; P 8 &nbsp; F 5 &nbsp; C 28</div></div></div>
+      <div class="meal"><div class="when">Dinner</div><div class="what"><div class="items">120 g minced beef + 120 g chicken breast &middot; 180 g white rice &middot; 150 g cabbage &middot; 100 g tatashe &middot; 5 ml oil</div><div class="macro">846 kcal &nbsp;&middot;&nbsp; P 76 &nbsp; F 30 &nbsp; C 65</div></div></div>
+      <div class="meal"><div class="when">Evening</div><div class="what"><div class="items">2 boiled eggs &middot; 200 g cucumber</div><div class="macro">174 kcal &nbsp;&middot;&nbsp; P 14 &nbsp; F 10 &nbsp; C 8</div></div></div>
+      <div class="total-row"><strong>Total 2,361 kcal</strong><span>Protein 208 g</span><span>Fat 74 g</span><span>Carbs 219 g</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="tag t-eat">Day C</span><h3>Sardine day</h3><span class="note">2,368 kcal</span></div>
+      <div class="meal"><div class="when">Breakfast</div><div class="what"><div class="items">4 eggs with 150 g cabbage + 80 g tatashe &middot; 1 slice white bread &middot; 1 banana</div><div class="macro">534 kcal &nbsp;&middot;&nbsp; P 32 &nbsp; F 21 &nbsp; C 57</div></div></div>
+      <div class="meal"><div class="when">Lunch</div><div class="what"><div class="items">150 g sardines, drained (1&frac12; tins) &middot; 190 g boiled Irish potato &middot; salad of 150 g lettuce + 100 g tomato + 100 g cucumber &middot; 5 ml oil</div><div class="macro">594 kcal &nbsp;&middot;&nbsp; P 40 &nbsp; F 27 &nbsp; C 51</div></div></div>
+      <div class="meal"><div class="when">Snack</div><div class="what"><div class="items">30 g mozzarella &middot; 1 orange</div><div class="macro">138 kcal &nbsp;&middot;&nbsp; P 8 &nbsp; F 5 &nbsp; C 16</div></div></div>
+      <div class="meal"><div class="when">Dinner</div><div class="what"><div class="items">250 g chicken breast &middot; 200 g white rice &middot; 200 g green beans &middot; 100 g carrot &middot; 5 ml oil</div><div class="macro">864 kcal &nbsp;&middot;&nbsp; P 87 &nbsp; F 20 &nbsp; C 80</div></div></div>
+      <div class="meal"><div class="when">Evening</div><div class="what"><div class="items">130 g turkey breast &middot; 1 orange</div><div class="macro">238 kcal &nbsp;&middot;&nbsp; P 40 &nbsp; F 2 &nbsp; C 15</div></div></div>
+      <div class="total-row"><strong>Total 2,368 kcal</strong><span>Protein 207 g</span><span>Fat 75 g</span><span>Carbs 219 g</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="tag t-eat">Day D</span><h3>Gizzard and beef</h3><span class="note">2,367 kcal</span></div>
+      <div class="meal"><div class="when">Breakfast</div><div class="what"><div class="items">4 eggs with 100 g tatashe + 100 g tomato &middot; 1 slice white bread &middot; 1 orange</div><div class="macro">478 kcal &nbsp;&middot;&nbsp; P 31 &nbsp; F 21 &nbsp; C 42</div></div></div>
+      <div class="meal"><div class="when">Lunch</div><div class="what"><div class="items">230 g chicken gizzard &middot; 300 g boiled sweet potato &middot; 200 g cabbage &middot; 100 g carrot &middot; 5 ml oil</div><div class="macro">803 kcal &nbsp;&middot;&nbsp; P 78 &nbsp; F 19 &nbsp; C 85</div></div></div>
+      <div class="meal"><div class="when">Snack</div><div class="what"><div class="items">1 banana &middot; 40 g mozzarella</div><div class="macro">207 kcal &nbsp;&middot;&nbsp; P 11 &nbsp; F 7 &nbsp; C 28</div></div></div>
+      <div class="meal"><div class="when">Dinner</div><div class="what"><div class="items">120 g minced beef + 145 g chicken breast &middot; 160 g white rice &middot; salad of 150 g lettuce + 100 g cucumber &middot; 5 ml oil</div><div class="macro">831 kcal &nbsp;&middot;&nbsp; P 83 &nbsp; F 30 &nbsp; C 53</div></div></div>
+      <div class="meal"><div class="when">Evening</div><div class="what"><div class="items">200 g cucumber + 100 g tomato, salted and peppered</div><div class="macro">48 kcal &nbsp;&middot;&nbsp; P 2 &nbsp; F 0 &nbsp; C 11</div></div></div>
+      <div class="total-row"><strong>Total 2,367 kcal</strong><span>Protein 205 g</span><span>Fat 77 g</span><span>Carbs 219 g</span></div>
+    </div>
+
+  </div>
+
+  <div class="grid2" style="margin-top:24px">
+    <div class="plain">
+      <h4 style="margin-bottom:6px">Swaps that keep the maths intact</h4>
+      <ul class="tight" style="margin-top:6px">
+        <li>Chicken breast, turkey breast and gizzard trade one-for-one by weight.</li>
+        <li>100 g of sardines &asymp; 90 g of minced beef.</li>
+        <li>150 g cooked rice &asymp; 210 g boiled Irish potato &asymp; 200 g boiled sweet potato &asymp; 3 slices bread.</li>
+        <li>1 egg &asymp; 30 g mozzarella.</li>
+        <li>Cucumber, lettuce, cabbage, tomato, tatashe and carrot all swap freely by weight. Green beans are about twice the calories of the others, so trade 100 g of green beans for 200 g of anything else.</li>
+        <li><strong>Still hungry?</strong> Cucumber and lettuce, without limit. 200 g is 30 kcal.</li>
+      </ul>
+    </div>
+    <div class="plain">
+      <h4 style="margin-bottom:6px">The one gap this vegetable list leaves</h4>
+      <p>Cucumber and lettuce are excellent for volume and almost nothing else &mdash; they are largely water. Dropping the dark leafy greens costs you folate, iron, vitamin&nbsp;K and magnesium that ugu and efo would have supplied. The carrot, tatashe and tomato cover vitamin&nbsp;A and C, and the sardines bring omega-3, vitamin&nbsp;D and calcium, but the gap is real.</p>
+      <p style="margin-top:10px"><strong>So the daily multivitamin moves from sensible to necessary.</strong> Any cheap complete one will do. If you ever decide to try one leafy green, <em>green amaranth</em> is the mildest of them and would close most of this on its own.</p>
+    </div>
+  </div>
+</section>
+
+<section id="shopping" class="eat">
+  <div class="sec-head">
+    <span class="eyebrow">Logistics</span>
+    <h2>One week of shopping</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="prose" style="margin-bottom:20px">
+    <p>Seven days running A&nbsp;&rarr;&nbsp;B&nbsp;&rarr;&nbsp;C&nbsp;&rarr;&nbsp;D&nbsp;&rarr;&nbsp;A&nbsp;&rarr;&nbsp;B&nbsp;&rarr;&nbsp;C. Meat is listed <em>raw</em>, which is how you buy it. Cucumber, lettuce and tomato are the only things that will not survive a full week &mdash; buy those twice, midweek and at the weekend.</p>
+  </div>
+  <div class="card" style="padding:20px">
+    <div class="shop"><ul>
+      <li><span>Chicken breast</span><span>1.8 kg</span></li>
+      <li><span>Turkey breast</span><span>1 kg</span></li>
+      <li><span>Chicken gizzard</span><span>800 g</span></li>
+      <li><span>Minced beef</span><span>500 g</span></li>
+      <li><span>Sardines</span><span>5 tins</span></li>
+      <li><span>Eggs</span><span>30 (one crate)</span></li>
+      <li><span>Mozzarella</span><span>240 g</span></li>
+      <li><span>White rice, dry</span><span>450 g</span></li>
+      <li><span>Irish potatoes</span><span>1.1 kg</span></li>
+      <li><span>Sweet potatoes</span><span>1 kg</span></li>
+      <li><span>White bread</span><span>7 slices &mdash; half a loaf</span></li>
+      <li><span>Cucumber</span><span>1.3 kg</span></li>
+      <li><span>Green beans</span><span>1.2 kg</span></li>
+      <li><span>Cabbage</span><span>1.2 kg &mdash; 1 large head</span></li>
+      <li><span>Tomatoes</span><span>1.1 kg</span></li>
+      <li><span>Tatashe / bell pepper</span><span>700 g</span></li>
+      <li><span>Carrots</span><span>500 g</span></li>
+      <li><span>Lettuce</span><span>450 g &mdash; 1 head</span></li>
+      <li><span>Bananas</span><span>7</span></li>
+      <li><span>Oranges</span><span>9</span></li>
+      <li><span>Cooking oil</span><span>~70 ml</span></li>
+      <li><span>Multivitamin</span><span>daily</span></li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="progress">
+  <div class="sec-head">
+    <span class="eyebrow">Feedback loop</span>
+    <h2>Holding the 5 kg</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="prose stack-sm" style="margin-bottom:24px">
+    <p>Weigh yourself every morning &mdash; after the toilet, before food, same clothes. Ignore any single reading; a plate of rice and a hot night can move you 1.5&nbsp;kg overnight. What you act on is the <strong>seven-day average against the week before</strong>. You need that number to average <strong>1.15&nbsp;kg or more</strong>.</p>
+  </div>
+  <div class="card scroll">
+    <table>
+      <thead><tr><th>What you see</th><th>What it means</th><th>What to change</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1.15&ndash;1.4 kg / wk</td><td>On target. This is 5&ndash;6 kg a month.</td><td>Nothing. Keep going.</td></tr>
+        <tr><td class="num">0.9&ndash;1.15 kg / wk<br><span class="why">one week</span></td><td>Probably noise &mdash; water, salt, a late meal.</td><td>Wait one more week before touching anything.</td></tr>
+        <tr><td class="num">Under 1.0 kg / wk<br><span class="why">two weeks running</span></td><td>Real. Either maintenance was overestimated or portions have crept up.</td><td><strong>1.</strong> Weigh your food for seven days &mdash; this alone fixes it most of the time. <strong>2.</strong> Steps 12,000 &rarr; 14,000. <strong>3.</strong> Only if both fail, cut 150 kcal (about 60 g of rice or 100 g of potato).</td></tr>
+        <tr><td class="num">Over 1.6 kg / wk<br><span class="why">after week 3</span></td><td>Faster than the muscle can survive. Water weight in weeks 1&ndash;2 does not count here.</td><td>Add 200 kcal back on the carb side. You do not get a prize for overshooting.</td></tr>
+        <tr><td class="num">Lifts falling<br><span class="why">two or more exercises, two weeks</span></td><td>Under-recovered. Usually sleep, sometimes protein, sometimes just the deficit biting.</td><td>7&ndash;9 hours of sleep first. Confirm you are truly hitting 210 g protein. Take the scheduled deload rather than pushing through. If it persists, add 200 kcal &mdash; strength is the early-warning system for muscle loss.</td></tr>
+        <tr><td class="num">Scale flat, belt looser</td><td>Recomposition &mdash; fat down, muscle up. Rare at this deficit but it happens early.</td><td>Nothing. This is why you also measure.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card scroll" style="margin-top:24px">
+    <div class="card-head"><span class="tag t-train">Every 4 weeks</span><h3>Recalibrate &mdash; a lighter you burns less</h3><span class="note">recalculate on the 1st of each block</span></div>
+    <table>
+      <thead><tr><th>Block</th><th class="num">Starting weight</th><th class="num">Intake</th><th class="num">Steps</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="lift">Weeks 1&ndash;4</td><td class="num">136.7 kg</td><td class="num">2,350 kcal</td><td class="num">12,000</td><td>Expect 6&ndash;7 kg this block &mdash; the first 2&ndash;3 kg is water and will not repeat.</td></tr>
+        <tr><td class="lift">Weeks 5&ndash;8</td><td class="num">~130 kg</td><td class="num">2,250 kcal</td><td class="num">13,000</td><td>Deload in week 6. Retake your measurements and photos.</td></tr>
+        <tr><td class="lift">Weeks 9&ndash;12</td><td class="num">~125 kg</td><td class="num">2,150 kcal</td><td class="num">14,000</td><td>The hardest block. Hold protein at 210 g and let the carbs take the cut.</td></tr>
+        <tr><td class="lift">Week 12</td><td class="num">~121 kg</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td>About 15 kg down. Reassess &mdash; either run another block or shift toward building.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid2" style="margin-top:24px">
+    <div class="plain">
+      <h4 style="margin-bottom:6px">Measure these on day one</h4>
+      <ul class="tight" style="margin-top:6px">
+        <li>Waist at the navel, and again at the widest point</li>
+        <li>Chest, hips, upper arm, thigh</li>
+        <li>Photos, front and side, same spot and light</li>
+        <li>Your top set on each of the four main lifts</li>
+      </ul>
+      <p style="margin-top:10px;color:var(--muted);font-size:.88rem">Repeat every four weeks. When the scale misbehaves, these tell you whether anything is actually wrong.</p>
+    </div>
+    <div class="plain">
+      <h4 style="margin-bottom:6px">The three that decide it</h4>
+      <ul class="tight" style="margin-top:6px">
+        <li><strong>Protein every day.</strong> Miss the calories occasionally; never miss the 210 g.</li>
+        <li><strong>12,000 steps every day.</strong> Not an average across the week &mdash; a daily floor.</li>
+        <li><strong>7&ndash;9 hours of sleep.</strong> Short sleep raises hunger, blunts recovery, and pushes the weight you lose away from fat and toward muscle. It is the highest-leverage free thing on this page.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="watch">
+  <div class="sec-head">
+    <span class="eyebrow">Before you start</span>
+    <h2>Worth getting checked</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="stack">
+    <div class="call">
+      <h4>See a doctor for a baseline &mdash; more so at this rate</h4>
+      <p>At 136.7&nbsp;kg and 195.6&nbsp;cm your BMI is about 35.7, and you are about to run a large deficit for twelve weeks. One appointment before you start: blood pressure, fasting glucose or HbA1c, and a lipid panel. It may change nothing, and if it does show something you want to know now rather than in week nine. Mention loud snoring or daytime sleepiness if either applies &mdash; sleep apnoea is common at this weight and treating it makes everything else easier.</p>
+    </div>
+    <div class="call">
+      <h4>Two risks that come with fast loss specifically</h4>
+      <ul class="tight">
+        <li><strong>Gallstones.</strong> Losing more than about 1.5&nbsp;kg a week raises the risk, and very low fat intake raises it further. This is why fat is held near 75&nbsp;g a day rather than cut to the floor, and why 1.6&nbsp;kg/week is a signal to eat <em>more</em>. Report persistent pain under the right ribs.</li>
+        <li><strong>Dehydration and cramps.</strong> Twelve thousand steps in Lagos heat on 4&nbsp;L of water is the plan, not a suggestion. Salt your food normally &mdash; you are sweating it out.</li>
+      </ul>
+    </div>
+    <div class="call">
+      <h4>Stop and get advice if</h4>
+      <ul class="tight">
+        <li>Chest pain, pressure or unusual breathlessness during effort</li>
+        <li>Dizziness or fainting</li>
+        <li>Joint pain that persists after the session rather than fading &mdash; especially knees or lower back</li>
+        <li>Numbness or shooting pain down a leg or arm</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built for Vester, revised 24 August 2026. Calorie and macro figures come from the Mifflin&ndash;St&nbsp;Jeor equation and standard food composition values, so treat them as good starting estimates rather than precise measurements &mdash; your own weekly weight trend is the instrument that matters, and the rules above tell you what to move when it disagrees. This is general fitness and nutrition information, not medical advice. A sustained deficit of this size at BMI 35.7 is the kind of thing a doctor who can actually examine you should have the final word on, particularly the baseline checks above.</p>
+</footer>
+
+</div>
